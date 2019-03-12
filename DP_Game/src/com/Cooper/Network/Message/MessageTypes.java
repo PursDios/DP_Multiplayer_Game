@@ -1,5 +1,9 @@
 package com.Cooper.Network.Message;
 
+/**
+ * @author PursDios
+ * @version 1.1
+ */
 public class MessageTypes
 {
 	//https://dzone.com/articles/using-java-enums

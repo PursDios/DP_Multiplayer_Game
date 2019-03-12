@@ -19,23 +19,33 @@ public class ConnectMenu extends JPanel implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	//container for all the ui elements of the form
 	private JPanel _Container;
+	//the connect button
 	private JButton _Connect;
+	//the ip address text box
 	private JTextField _Textbox;
+	//the text label
 	private JLabel _ConnectLabel;
 	
 	public ConnectMenu()
 	{
 		this.setLayout(null);
 		this.setVisible(true);
+		//loads the item settings
 		ItemSettings();
+		//loads the panel settings
 		PanelSettings();
+		//adds the ui elements to the panel
 		add(_Container);
 	}
 	
+	/**
+	 * Sets the settings for all the UI elements
+	 */
 	private void ItemSettings()
 	{
-		
+		//ui settings for the connect button
 		_Connect = new JButton("Connect");
 		_Connect.setSize(180, 50);
 		_Connect.setLocation(50, 50);
@@ -43,6 +53,7 @@ public class ConnectMenu extends JPanel implements ActionListener
 		_Connect.setBackground(Color.WHITE);
 		_Connect.addActionListener(this);
 		
+		//ui settings for the text label
 		_ConnectLabel = new JLabel("Status: ");
 		_ConnectLabel.setSize(180, 50);
 		_ConnectLabel.setLocation(60, 85);
@@ -50,6 +61,7 @@ public class ConnectMenu extends JPanel implements ActionListener
 		_ConnectLabel.setBackground(Color.WHITE);
 		_ConnectLabel.setVisible(false);
 		
+		//ui settings for the text box.
 		_Textbox = new JTextField();
 		_Textbox.setSize(180, 20);
 		_Textbox.setLocation(50, 10);
@@ -68,26 +80,34 @@ public class ConnectMenu extends JPanel implements ActionListener
 		});
 	}
 	
+	/**
+	 * Sets the panel settings for this menu
+	 */
 	private void PanelSettings()
 	{
 		_Container = new JPanel();
 		_Container.setBounds(0, 0, 400, 300);
 		_Container.setLayout(null);
+		//adds all of the ui elements to the container before making them visible.
 		_Container.add(_Textbox);
 		_Container.add(_ConnectLabel);
 		_Container.add(_Connect);
 		_Container.setVisible(true);
 	}
 	
+	/**
+	 * if an action is performed.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) 
 	{
-		// TODO Auto-generated method stub
+		//if the button is pressed
 		if(ae.getSource().getClass() == JButton.class)
 		{
 			System.out.println("Connect Called");
 			_ConnectLabel.setText("Status: Connecting...");
 			_ConnectLabel.setVisible(true);
+			//attempt to connect to the server.
 			Controller.getInstance().Connect(_Textbox.getText());
 		}
 	}

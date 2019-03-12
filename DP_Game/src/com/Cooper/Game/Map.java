@@ -2,11 +2,11 @@ package com.Cooper.Game;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import com.Cooper.Control.ResourceLoader;
 
 /**
  * @author Ryan Cooper
@@ -79,11 +79,10 @@ public class Map
 		//If the map is null. Create a new one and set it to the image from the map location.
 		try 
 		{
-			_Map = ImageIO.read(new File(getMapLocation()));
+			_Map = ImageIO.read(ResourceLoader.load(getMapLocation()));
 		} 
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return _Map;
@@ -111,7 +110,7 @@ public class Map
 			//Used to split the string after it's been read.
 			String LineResult[];
 			//Reads in the text file that's the same name as the map.
-			BufferedReader br = new BufferedReader(new FileReader("resources/GameData/" + _Name + ".txt"));
+			BufferedReader br = ResourceLoader.loadFile("/GameData/" + _Name + ".txt");
 			//gets the player locations for all 6 players (map specific)
 			for(int i=0;i<6;i++)
 			{

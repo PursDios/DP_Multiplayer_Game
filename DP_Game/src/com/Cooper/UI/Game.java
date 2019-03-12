@@ -82,17 +82,22 @@ public class Game extends JPanel implements ActionListener, KeyListener
 		//Sets the image of the map.
 		this._MapImage = _Map.getMapImage();
 		
+		//for each player in the list of players
 		for(Player player : Controller.getInstance().GetPlayerList())
 		{
+			//if the player id doesn't equal the current players id
 			if(player.GetPlayerID() != _CurrentPlayer.GetPlayerID())
 			{
+				//get set the vehiclelabel to visible.
 				player.GetPlayerCar().GetVehicleLabel().setVisible(true);
+				//adds the players label to the current panel
 				this.add(player.GetPlayerCar().GetVehicleLabel());
 			}
-			
 			else
 			{
+				//sets the CURRENTPLAYERS vehiclelabel to true
 				_CurrentPlayer.GetPlayerCar().GetVehicleLabel().setVisible(true);
+				//adds the currentplayers label to the panel.
 				this.add(_CurrentPlayer.GetPlayerCar().GetVehicleLabel());
 			}
 		}
@@ -100,6 +105,7 @@ public class Game extends JPanel implements ActionListener, KeyListener
 		//Creates the timer
 		_UpdateTimer = new Timer(20,this);
 		
+		//adds all the checkpoints to the map.
 		for(Checkpoint check : _Map.GetCheckPoints())
 		{
 			//add it to the map.
@@ -124,18 +130,20 @@ public class Game extends JPanel implements ActionListener, KeyListener
 			//(Shouldn't happen but just incase)
 			_Map = new Map("Maps/map0.png");
 		}
-		
+		//gets the x and y size of the map and makes it 4 times larger.
 		WORLD_SIZE_X = _MapImage.getWidth(null) * 4;
 		WORLD_SIZE_Y = _MapImage.getHeight(null) * 4;
 		
+		//calculates the offsets.
 		int offsetMaxX = WORLD_SIZE_X - VIEWPOINT_SIZE_X;
 		int offsetMaxY = WORLD_SIZE_Y - VIEWPOINT_SIZE_Y;
 		int offsetMinX = 0;
 		int offsetMinY = 0;
 		
+		//calcualtes the camera location
 		_camX = (_CurrentPlayer.GetPlayerCar().GetVehicleLabel().getX() + (_CurrentPlayer.GetPlayerCar().GetVehicleLabel().getWidth() / 2)) - VIEWPOINT_SIZE_X / 2;
 		_camY = (_CurrentPlayer.GetPlayerCar().GetVehicleLabel().getY() + (_CurrentPlayer.GetPlayerCar().GetVehicleLabel().getHeight() / 2)) - VIEWPOINT_SIZE_Y / 2;
-		
+	
 		if (_camX > offsetMaxX)
 			_camX = offsetMaxX;
 		if (_camY > offsetMaxY)
@@ -145,8 +153,10 @@ public class Game extends JPanel implements ActionListener, KeyListener
 		if (_camY < offsetMinY)
 			_camY = offsetMinY;
 		
+		//sets the camera loation
 		at.translate(-_camX, -_camY);
 		
+		//transforms the camera location
 		g2d.transform(at);
 		//draws the scaled image.
 		g2d.drawImage(_MapImage, 0, 0, (int)WORLD_SIZE_X, (int)WORLD_SIZE_Y, null);
@@ -249,6 +259,9 @@ public class Game extends JPanel implements ActionListener, KeyListener
 		}
 	}
 	
+	/**
+	 * Updates the current players locations.
+	 */
 	private void Update()
 	{
 		//if d is pressed change the angle of the car.

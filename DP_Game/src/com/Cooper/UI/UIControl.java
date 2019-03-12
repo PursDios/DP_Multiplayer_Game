@@ -79,6 +79,9 @@ public class UIControl extends JFrame implements ActionListener
 		StartWindowListener();
 	}
 	
+	/**
+	 * Listens for the window being closed.
+	 */
 	public void StartWindowListener()
 	{
 		this.addWindowListener(new WindowAdapter()
@@ -87,10 +90,13 @@ public class UIControl extends JFrame implements ActionListener
             public void windowClosing(WindowEvent e) 
 			{
                 System.out.println("Window Closing...");
+                //if the player is currently connected to a server
                 if(IsConnected)
                 {
+                	//disconnect
                 	Client.GetInstance().Disconnect();
                 }
+                //close the program.
                 System.exit(0);
             }
 		});
@@ -114,6 +120,9 @@ public class UIControl extends JFrame implements ActionListener
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Loads the connect menu
+	 */
 	public void LoadConnect()
 	{
 		HideAllScreens();
@@ -128,6 +137,10 @@ public class UIControl extends JFrame implements ActionListener
 		this.setVisible(true);
 	}
 	
+	/**
+	 * loads the multiplayer lobby menu
+	 * @param host whether the user is the host or not
+	 */
 	public void MultiplayerLoadLobby(boolean host)
 	{
 		HideAllScreens();
@@ -143,6 +156,9 @@ public class UIControl extends JFrame implements ActionListener
 		IsConnected = true;
 	}
 	
+	/**
+	 * loads the game.
+	 */
 	public void LoadGame()
 	{
 		HideAllScreens();
@@ -157,33 +173,53 @@ public class UIControl extends JFrame implements ActionListener
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Updates the multiplayer lobby's map image
+	 * @param maploc the location of the mapimage
+	 */
 	public void UpdateMap(String maploc)
 	{
+		//if the multiplayer lobby screen isn't null
 		if(_MultiplayerLobbyScreen != null)
 		{
+			//update the multiplayerlobby screen map.
 			_MultiplayerLobbyScreen.UpdateMap(maploc);
 		}
 	}
 	
+	/**
+	 * adds a chat message to the multiplayer lobby screen.
+	 * @param playername the name of the player sending the message
+	 * @param message the message being sent by the player
+	 */
 	public void AddChatMessage(String playername, String message)
 	{
-		//IMPLEMENT ME!
+		//sends the message to the chat.
 		_MultiplayerLobbyScreen.AddMessage(playername + ": ", message);
 	}
 	
+	/**
+	 * writes a message to the chat and updates the player ready list.
+	 */
 	public void NewPlayerConnected() 
 	{
 		if(_MultiplayerLobbyScreen !=null)
 		{
+			//sends a message to the chat
 			_MultiplayerLobbyScreen.AddMessage("System: ", " a new player has joined!");
+			//updates the player ready list
 			this.UpdateReadyList();
 		}
 	}
 	
+	/**
+	 * update the ready list
+	 */
 	public void UpdateReadyList() 
 	{
 		if(_MultiplayerLobbyScreen != null)
 		{
+			//updates the multiplayer lobby screen ready list.
 			_MultiplayerLobbyScreen.UpdateReadyList();
 		}
 	}
@@ -204,14 +240,21 @@ public class UIControl extends JFrame implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
-		// TODO Auto-generated method stub
+		
 	}
 
+	/**
+	 * Updates the player name
+	 * @param oldname the previous name of the player
+	 * @param playername the new name of the player
+	 */
 	public void UpdatePlayerName(String oldname, String playername) 
 	{
 		if(_MultiplayerLobbyScreen != null)
 		{
+			//writes a message to the chat
 			_MultiplayerLobbyScreen.AddMessage(oldname, " has changed their name to " + playername);
+			//updates the ready list (to account for the new name)
 			_MultiplayerLobbyScreen.UpdateReadyList();
 		}
 	}

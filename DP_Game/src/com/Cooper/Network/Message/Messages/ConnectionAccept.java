@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import com.Cooper.Network.Message.MessageTypes.MessageType;
 
+/**
+ * @author PursDios
+ * @version 1.0
+ */
 public class ConnectionAccept extends NetworkMessage implements Serializable
 {
 	private static final long serialVersionUID = -6267197333606682275L;

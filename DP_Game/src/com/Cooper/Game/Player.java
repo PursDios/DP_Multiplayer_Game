@@ -2,7 +2,7 @@ package com.Cooper.Game;
 
 /**
  * @author Ryan Cooper
- * @version  1.0
+ * @version  1.1
  */
 
 public class Player 
@@ -23,7 +23,7 @@ public class Player
 		_PlayerCar = new Vehicle(ID);
 		_PlayerID = ID;
 		this._PlayerName = playername;
-		_PlayerCar.setImageLocation("resources/Cars/NotAudi/audi0.png");
+		_PlayerCar.setImageLocation("Cars/car1.png");
 	}
 	/**
 	 * Returns the players name.
@@ -33,18 +33,34 @@ public class Player
 	{
 		return _PlayerName;
 	}
+	/**
+	 * Sets the players name
+	 * @param playername string of the players name
+	 */
 	public void SetPlayerName(String playername)
 	{
 		_PlayerName = playername;
 	}
+	/**
+	 * Gets the players id
+	 * @return integer of the players id
+	 */
 	public int GetPlayerID()
 	{
 		return _PlayerID;
 	}
+	/**
+	 * Gets the ready status of the player
+	 * @return returns the ready status of the player
+	 */
 	public boolean GetReady()
 	{
 		return _Ready;
 	}
+	/**
+	 * Sets the players ready status
+	 * @param ready the ready status
+	 */
 	public void SetReady(boolean ready)
 	{
 		_Ready = ready;

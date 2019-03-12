@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import com.Cooper.Network.Message.MessageTypes.MessageType;
 
+/**
+ * @author PursDios
+ * @version 1.0
+ */
 public class EndGame extends NetworkMessage implements Serializable
 {
 	/**

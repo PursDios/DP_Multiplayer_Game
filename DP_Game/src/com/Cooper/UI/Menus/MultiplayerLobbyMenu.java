@@ -5,9 +5,10 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import com.Cooper.Control.Controller;
+import com.Cooper.Control.ResourceLoader;
 import com.Cooper.Game.Player;
 import com.Cooper.Network.Client;
 
@@ -29,22 +31,35 @@ public class MultiplayerLobbyMenu extends JPanel implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	//container for all of the display elements
 	private JPanel _Container;
+	//all the buttons used on the panel
 	private JButton _Ready, _CarPrev, _CarNext, _MapPrev, _MapNext, _SendMessage, _ChangeName;
+	//the imageicons for the car and map
 	private ImageIcon _CarIcon, _MapIcon;
+	//the labels for the panel (for displaying images or text)
 	private JLabel _Car, _Map, _PlayerNameLabel, _ReadyListLabel;
+	//Area for chat messages
 	private JTextArea _Chat;
+	//scroll bar for the chat
 	private JScrollPane _ChatScroll;
+	//textboxes for the user to input text
 	private JTextField _Message, _PlayerName;
+	//a list of players for the jlist
 	private DefaultListModel<String> _ReadyPlayers;
+	//the list of ready players
 	private JList<String> _ReadyList;
+	//the local player
 	private Player p;
 	
-	private File[] cars, maps;
-	private int SelectedCar=0, SelectedMap=1;
+	private ArrayList<String> cars, maps;
+	private int SelectedCar=1, SelectedMap=1;
 	private boolean _Host;
 
+	/**
+	 * Constructor for the multiplayer lobby
+	 * @param host whether the player is the host or not
+	 */
 	public MultiplayerLobbyMenu(boolean host) 
 	{
 		_Host = host;
@@ -62,37 +77,64 @@ public class MultiplayerLobbyMenu extends JPanel implements ActionListener
 		add(_Container);
 	}
 	
-	///Gets the DIRECTORY of all of the available cars (eg. Sports, Truck etc.) 
+	/**
+	 * Gets all of the vehicles currently in the program
+	 */
 	private void GetVehicles() 
 	{
-		//Location of all the directories
-		File file = new File("resources/Cars");
-
-		//populate cars with a list of files.
-		cars = file.listFiles(new FileFilter() 
+		//arraylist of cars
+		cars = new ArrayList<String>();
+		//loop status
+		boolean loop = true;
+		//number of the car
+		int i=0;
+		do
 		{
-			//Override the default FileFilter method to only return Directories.
-			@Override
-			public boolean accept(File f) 
+			//if the resource loader can find a car named cari (i being the number of the car we're looking for next)
+			if(ResourceLoader.load("Cars/car" + i + ".png") !=null)
 			{
-				return f.isDirectory();
+				//add the car to the list
+				cars.add("Cars/car" + i + ".png");
 			}
-		});
+			//if not stop looping
+			else
+				loop = false;
+			i++;
+		}while(loop == true);
 	}
 	
-	///Gets all of the maps.
+	/**
+	 * gets all of the maps
+	 */
 	private void GetMaps()
 	{
-		//Current Directory of the Maps
-		File file = new File("resources/Maps/");
-		//Populate the array with the list of maps.
-		maps = file.listFiles();
+		//arraylist of maps.
+		maps = new ArrayList<String>();
+		//loop status
+		boolean loop = true;
+		//the number of the map we are looking for next
+		int i=0;
+		do
+		{
+			//if the resourceloader can find a map by the name of mapi (where i is the number of the map we are looking for next)
+			if(ResourceLoader.load("Maps/map" + i + ".png") !=null)
+			{
+				//add it to the list
+				maps.add("Maps/map" + i + ".png");
+			}
+			//if not stop looping
+			else
+				loop = false;
+			i++;
+		}while(loop == true);
 	}
 
-	///All of the settings for each of the display elements (e.g. button location, size etc.)
+	/**
+	 * Loads all of the settings for the ui elements of the program.
+	 */
 	private void ItemSettings() 
 	{
-		
+		//gets the local player from the controller.
 		p = Controller.getInstance().GetLocalPlayer();
 		
 		//Makes the button and gives it the text 'Ready'
@@ -161,7 +203,7 @@ public class MultiplayerLobbyMenu extends JPanel implements ActionListener
 		_ChangeName.addActionListener(this);
 		
 		// Default Location for car 1
-		_CarIcon = new ImageIcon("resources/Cars/NotAudi/audi0.png");
+		_CarIcon = new ImageIcon("Cars/car0.png");
 		// Give the label the ImageIcon
 		_Car = new JLabel(_CarIcon);
 		// set the location of the label
@@ -169,10 +211,17 @@ public class MultiplayerLobbyMenu extends JPanel implements ActionListener
 		// set the size of the label.
 		_Car.setSize(200, 200);
 		// Sets the Icon for the label to display but scaled (This couldn't be done at creation)
-		_Car.setIcon(ScaleImage("resources/Cars/NotAudi/audi0.png", 200,200));
+		_Car.setIcon(ScaleImage("Cars/car1.png", 200,200));
 
 		// Default Location for map 1
-		_MapIcon = new ImageIcon("resources/Maps/map1.png");
+		try 
+		{
+			_MapIcon = new ImageIcon(ImageIO.read(ResourceLoader.load("Maps/map1.png")));
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 		// Give the label the ImageIcon
 		_Map = new JLabel(_MapIcon);
 		// set the location of the label
@@ -180,7 +229,7 @@ public class MultiplayerLobbyMenu extends JPanel implements ActionListener
 		// set the size of the label.
 		_Map.setSize(300, 300);
 		// Sets the Icon for the label to display but scaled (This couldn't be done at creation)
-		_Map.setIcon(ScaleImage("resources/Maps/map1.png", 300, 300));
+		_Map.setIcon(ScaleImage("Maps/map1.png", 300, 300));
 		
 		_Chat = new JTextArea("You have Joined!\nWelcome to the game lobby!\n\n");
 		_Chat.setEditable(false);
@@ -338,72 +387,104 @@ public class MultiplayerLobbyMenu extends JPanel implements ActionListener
 	///Scales the ImageIcon sent to it
 	private ImageIcon ScaleImage(String path, int Width, int Height) 
 	{
+		Image i=null;
+		try 
+		{
+			i = ImageIO.read(ResourceLoader.load(path));
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
 		//new image icon
-		ImageIcon ii;
-		// transform it into an image.
-		Image image = new ImageIcon(path).getImage(); 
-		// Scale and smooth the image.
-		Image newimg = image.getScaledInstance(Width, Height, java.awt.Image.SCALE_SMOOTH); 
-		// transform it back to an ImageIcon
-		ii = new ImageIcon(newimg); 
+		ImageIcon ii = new ImageIcon(i.getScaledInstance(Width, Height, java.awt.Image.SCALE_SMOOTH));
 		//return the imageicon
 		return ii;
 	}
 
-	///Changes the car displayed in the lobby when the next or previous buttons are pressed.
+	/**
+	 * Changes the car displayed in the lobby when the next or previous buttons are pressed.
+	 */
 	private void CarManage() 
 	{
-		System.out.println(SelectedCar);
-		File[] Inside;
-		
+		//it it's less than 0 set it to the max
 		if(SelectedCar == -1)
-			SelectedCar = cars.length -1;
-		else if(SelectedCar == cars.length)
+			SelectedCar = cars.size() -1;
+		//if it's 1 higher than the max set it to the minimum
+		else if(SelectedCar == cars.size())
 			SelectedCar = 0;
 		
-		Inside = new File(cars[SelectedCar].getPath() + "/").listFiles();
-		_Car.setIcon(ScaleImage(Inside[0].getPath(),200,200));
-		System.out.println(Inside[0].toString());
-		Controller.getInstance().UpdatePlayerCar(p.GetPlayerID(), Inside[0].getPath());
-		Client.GetInstance().UpdatePlayerCar(Inside[0].getPath());
+		//sets the icon.
+		_Car.setIcon(ScaleImage(cars.get(SelectedCar),200,200));
+		System.out.println(cars.get(SelectedCar));
+		
+		//updates all other players to the update.
+		Controller.getInstance().UpdatePlayerCar(p.GetPlayerID(), cars.get(SelectedCar));
+		//updates the controller instance of the car.
+		Client.GetInstance().UpdatePlayerCar(cars.get(SelectedCar));
 	}
 	
+	/**
+	 * Changes the map displayed in the lobby when the next or previous buttons are pressed.
+	 */
 	private void MapManage()
 	{
+		//it it's less than 0 set it to the max
 		if(SelectedMap == -1)
-			SelectedMap = maps.length -1;
-		else if(SelectedMap == maps.length)
+			SelectedMap = maps.size() -1;
+		//if it's 1 higher than the max set it to the minimum
+		else if(SelectedMap == maps.size())
 			SelectedMap = 0;
+		//sets the icon.
+		_Map.setIcon(ScaleImage(maps.get(SelectedMap), 300, 300));
 		
-		_Map.setIcon(ScaleImage(maps[SelectedMap].getPath(), 300, 300));
-		
-		Controller.getInstance().UpdateMap("map" + SelectedMap, maps[SelectedMap].getPath());
-		Client.GetInstance().UpdateMap("map" + SelectedMap , maps[SelectedMap].getPath());
+		//updates the controller instance of the map
+		Controller.getInstance().UpdateMap("map" + SelectedMap, maps.get(SelectedMap));
+		//updates all other players to the update.
+		Client.GetInstance().UpdateMap("map" + SelectedMap , maps.get(SelectedMap));
 	}
 
+	/**
+	 * Updates the map image
+	 * @param maplocation the maplocation.
+	 */
 	public void UpdateMap(String maplocation)
 	{
 		_Map.setIcon(ScaleImage(maplocation, 300, 300));
 	}
 	
+	/**
+	 * Adds a message to the chat
+	 * @param playername the name of the player writing the message
+	 * @param message the message being written
+	 */
 	public void AddMessage(String playername, String message) 
 	{
 		_Chat.append(playername + " " + message + "\n");
 	}
 	
+	/**
+	 * Updates the player ready list
+	 */
 	public void UpdateReadyList()
 	{
+		//removes everything from the list 
 		_ReadyPlayers.clear();
 		String readyline;
+		//for each player
 		for(Player p : Controller.getInstance().GetPlayerList())
 		{
+			//the name of the player + :
 			readyline = p.GetPlayerName() + ": ";
-			
+			//if the player is ready add ready to the end of the message
 			if(p.GetReady())
 				readyline += " ready";
+			//if the player isn't ready add not ready to the end of the message
 			else if(!p.GetReady())
 				readyline += " not ready";
 			
+			//add at line of text to the readlist.
 			_ReadyPlayers.addElement(readyline);
 		}
 	}

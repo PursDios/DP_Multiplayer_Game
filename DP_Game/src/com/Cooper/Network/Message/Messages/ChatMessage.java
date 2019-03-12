@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import com.Cooper.Network.Message.MessageTypes.MessageType;
 
+/**
+ * @author PursDios
+ * @version 1.0
+ */
 public class ChatMessage extends NetworkMessage implements Serializable
 {
 	/**
@@ -12,6 +16,7 @@ public class ChatMessage extends NetworkMessage implements Serializable
 	private static final long serialVersionUID = -3246190560055504874L;
 	private int _PlayerID;
 	private String _Message;
+	
 	public ChatMessage(MessageType type, int playerid, String message) 
 	{
 		super(type);

@@ -3,7 +3,6 @@ package com.Cooper.Game;
 import java.awt.Point;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.Cooper.Control.Collision;
+import com.Cooper.Control.ResourceLoader;
 import com.Cooper.Network.Client;
 import com.Cooper.UI.VehicleLabel;
 
@@ -146,7 +146,7 @@ public class Vehicle
 			try 
 			{
 				//read in the image from the file location.
-				_Image = ImageIO.read(new File(_ImageLocation));
+				_Image = ImageIO.read(ResourceLoader.load(_ImageLocation));
 			} 
 			catch (IOException e) 
 			{
@@ -182,9 +182,16 @@ public class Vehicle
 		{
 			if(_ImageLocation == null)
 			{
-				_ImageLocation = "resources/Cars/NotAudi/audi0.png";
+				_ImageLocation = "Cars/car1.png";
 			}
-			_ImageIcon = new ImageIcon(_ImageLocation);
+			try 
+			{
+				_ImageIcon = new ImageIcon(ImageIO.read(ResourceLoader.load(_ImageLocation)));
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 		}
 		return _ImageIcon;
 	}
@@ -229,7 +236,6 @@ public class Vehicle
 	 */
 	private void Accelerate() 
 	{
-		// TODO Auto-generated method stub
 		double SpeedLimit = 50;
 		
 		//if the speed is greater than the speedlimit
