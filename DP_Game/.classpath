@@ -6,6 +6,6 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="Resources"/>
+	<classpathentry excluding="Sounds/" kind="src" path="Resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

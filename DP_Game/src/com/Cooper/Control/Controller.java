@@ -283,13 +283,19 @@ public class Controller
 	/**
 	 * Connects to a server
 	 * @param Address the IP address of the server.
+	 * @return 
 	 */
-	public void Connect(String Address)
+	public boolean Connect(String Address)
 	{
 		//connects to the server using the port 7050 and the IP address given.
-		Client.GetInstance().Connect(Address, 7050);
-		//loads the multiplayer lobby.
-		MultiplayerLoadLobby(false);
+		boolean successful = Client.GetInstance().Connect(Address, 7050);
+		if(successful)
+		{
+			//loads the multiplayer lobby.
+			MultiplayerLoadLobby(false);
+			return true;
+		}
+		return false;
 	}
 	
 	/**

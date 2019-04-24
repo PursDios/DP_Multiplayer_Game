@@ -132,7 +132,7 @@ public class UIControl extends JFrame implements ActionListener
 			_JPanelList.add(_ConnectScreen);
 			_Container.add(_ConnectScreen);
 		}
-		this.setSize(290,150);
+		this.setSize(290,180);
 		_ConnectScreen.setVisible(true);
 		this.setVisible(true);
 	}

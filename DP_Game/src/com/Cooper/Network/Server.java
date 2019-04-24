@@ -1,11 +1,14 @@
 package com.Cooper.Network;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.omg.CORBA.portable.OutputStream;
 
 import com.Cooper.Game.Map;
 import com.Cooper.Game.Player;
@@ -32,6 +35,8 @@ public class Server
 	private Thread ListenThread;
 	//the list of client threads
 	private ExecutorService _ClientThreads;
+	
+	private ObjectOutputStream _os;
 	//the map being used for the game.
 	private Map _Map;
 	
@@ -126,15 +131,25 @@ public class Server
 			{
 				//accept a new player (and store their socket information)
 				Socket NewClient = _ServerSocket.accept();
-				//create a serversession with that socket information
-				ServerSession ClientSession = new ServerSession(NewClient);
 				
-				//open the connection with that serversession
-				ClientSession.OpenConnection();
-				//add the sessopm to the list
-				_SessionList.add(ClientSession);
-				//add a new thread to the list.
-				_ClientThreads.submit(ClientSession);
+				if(_SessionList.size() < 6)
+				{
+					//create a serversession with that socket information
+					ServerSession ClientSession = new ServerSession(NewClient);
+					
+					//open the connection with that serversession
+					ClientSession.OpenConnection();
+					//add the sessopm to the list
+					_SessionList.add(ClientSession);
+					//add a new thread to the list.
+					_ClientThreads.submit(ClientSession);
+				}
+				else
+				{
+					_os = new ObjectOutputStream(NewClient.getOutputStream());
+					_os.writeObject(new NetworkMessage(MessageType.CONNECTION_REJECT));
+					_os.flush();
+				}
 			}
 			catch(Exception e)
 			{

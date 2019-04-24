@@ -235,7 +235,10 @@ public class Collision
 		//Checks to see if the player has passed a checkpoint.
 		CheckpointCheck(p);
 		if(ImpactMap || ImpactCars)
+		{
+			Sound.getInstance().PlayCrash();
 			return true;
+		}
 		else
 			return false;
 	}

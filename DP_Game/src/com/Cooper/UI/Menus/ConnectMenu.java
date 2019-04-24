@@ -108,7 +108,9 @@ public class ConnectMenu extends JPanel implements ActionListener
 			_ConnectLabel.setText("Status: Connecting...");
 			_ConnectLabel.setVisible(true);
 			//attempt to connect to the server.
-			Controller.getInstance().Connect(_Textbox.getText());
+			boolean connected = Controller.getInstance().Connect(_Textbox.getText());
+			if(!connected)
+				_ConnectLabel.setText("Server Full");
 		}
 	}
 }

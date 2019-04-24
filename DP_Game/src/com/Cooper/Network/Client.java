@@ -84,18 +84,21 @@ public class Client
 			_Connection.setSoTimeout(0);
 			
 			//Creates Streams
-			if(_OutputStream == null)
+			//if(_OutputStream == null)
 				_OutputStream = new ObjectOutputStream(_Connection.getOutputStream());
-			if(_InputStream == null)
+			//if(_InputStream == null)
 			_InputStream = new ObjectInputStream(_Connection.getInputStream());
 			
 			//Sends the hello message to the server
 			Send(new NetworkMessage(MessageType.HELLO));
 			//listens for a reply
-			ConnectionAccept msg = (ConnectionAccept)_InputStream.readObject();
+			NetworkMessage msg = (NetworkMessage)_InputStream.readObject();
 			//if it gets a reply checks the message content
-			CheckMessage(msg);
+			boolean connected = CheckMessage(msg);
 			
+			if(!connected)
+				return false;
+				
 			//creates the output bytearray stream dn output stream for UDP.
 			_UDPOutputByteArray = new ByteArrayOutputStream();
 			_UDPOutputStream = new ObjectOutputStream(_UDPOutputByteArray);
@@ -178,7 +181,7 @@ public class Client
 	 * checks the content of a network message
 	 * @param msg a network message
 	 */
-	private void CheckMessage(NetworkMessage msg)
+	private boolean CheckMessage(NetworkMessage msg)
 	{
 		//if the message is a connection accept message
 		if(msg.GetMessageType() == MessageType.CONNECTION_ACCEPT)
@@ -203,6 +206,12 @@ public class Client
 			
 			//sets the local player to be the same as the player just created.
 			_LocalPlayer = p;
+			
+		}
+		else if(msg.GetMessageType() == MessageType.CONNECTION_REJECT)
+		{
+			System.out.println("PLAYER REJECTED");
+			return false;
 		}
 		//if the message is a current players message
 		else if(msg.GetMessageType() == MessageType.CURRENT_PLAYERS)
@@ -332,6 +341,7 @@ public class Client
 			//calls the end of the game.
 			Controller.getInstance().FinishGame(Winner);
 		}
+		return true;
 	}
 	
 	/**

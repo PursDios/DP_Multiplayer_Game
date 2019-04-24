@@ -70,7 +70,6 @@ public class ServerSession implements Runnable
 	 */
 	public void OpenConnection()
 	{
-		//Set Player ID here?
 		try 
 		{
 			//TCP 
